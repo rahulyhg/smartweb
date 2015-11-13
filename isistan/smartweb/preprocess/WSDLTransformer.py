@@ -65,18 +65,18 @@ class WSDLTransformer(Transformer):
             for port_type in port_type_list:
                 port_type_name_list = WSDLTransformer._process_name(port_type, self.WSDL_ATTRIBUTE_NAME)
                 operation_list = self._reader.get_elements_from(port_type, [self.WSDL_TAG_OPERATION])
-                if port_type_name_list is not None:
-                    terms.extend(port_type_name_list)
+                """if port_type_name_list is not None:
+                    terms.extend(port_type_name_list)"""
                 if operation_list is not None:
                     for operation in operation_list:
                         inputs = self._reader.get_elements_from(operation, [self.WSDL_TAG_INPUT])
                         outputs = self._reader.get_elements_from(operation, [self.WSDL_TAG_OUTPUT])
                         terms.extend(WSDLTransformer._process_documentation(
                             self._reader.get_elements_from(operation, [self.WSDL_TAG_DOCUMENTATION])))
-                        if len(inputs) > 0:
+                        """if len(inputs) > 0:
                             terms.extend(WSDLTransformer._process_name(inputs[0], self.WSDL_ATTRIBUTE_MESSAGE))
                         if len(outputs) > 0:
-                            terms.extend(WSDLTransformer._process_name(outputs[0], self.WSDL_ATTRIBUTE_MESSAGE))
+                            terms.extend(WSDLTransformer._process_name(outputs[0], self.WSDL_ATTRIBUTE_MESSAGE))"""
                         terms.extend(WSDLTransformer._process_name(operation, self.WSDL_ATTRIBUTE_NAME))
         return terms
 

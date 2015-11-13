@@ -50,7 +50,7 @@ class XMLReader(object):
         elements = []
         for element in root.iter():
                 for type_elem in element_types_list:
-                        if type_elem in element.tag:
+                        if type_elem == element.tag:
                                 elements.append(element)
         return elements
 
