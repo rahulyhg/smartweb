@@ -49,9 +49,12 @@ class XMLReader(object):
     def get_elements_from(root, element_types_list):
         elements = []
         for element in root.iter():
-                for type_elem in element_types_list:
-                        if type_elem == element.tag:
-                                elements.append(element)
+            tag = element.tag
+            for type_elem in element_types_list:
+                if '}' in tag:
+                    tag = tag.split('}')[1]
+                if type_elem == tag:
+                    elements.append(element)
         return elements
 
     def write_to_file(self, path):
