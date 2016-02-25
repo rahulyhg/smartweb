@@ -24,12 +24,17 @@ class SmartWebClient(SearchEngine):
         }
 
         data = urllib.urlencode(values)
+
+        proxy_handler = urllib2.ProxyHandler({})
+        opener = urllib2.build_opener(proxy_handler)
         req = urllib2.Request(self._server_url + self._services_path, data)
-        print urllib2.urlopen(req).read()
+        print opener.open(req).read()
 
     def find(self, query):
         url = self._server_url + self._services_path +'/' + urllib.quote(query)
-        return urllib2.urlopen(url).read().split(' ')
+        proxy_handler = urllib2.ProxyHandler({})
+        opener = urllib2.build_opener(proxy_handler)
+        return opener.open(url).read().split(' ')
 
     def publish(self, service):
         pass
