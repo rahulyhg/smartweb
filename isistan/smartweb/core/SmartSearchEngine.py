@@ -1,8 +1,5 @@
 import abc
 
-from os.path import join
-
-from isistan.smartweb.persistence.WordBag import WordBag
 
 __author__ = 'ignacio'
 

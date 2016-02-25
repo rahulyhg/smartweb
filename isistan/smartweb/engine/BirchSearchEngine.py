@@ -1,11 +1,8 @@
-from os.path import join
-
 from sklearn.cluster import Birch
 from sklearn.neighbors import NearestNeighbors
 
 from isistan.smartweb.preprocess.text import TfidfVectorizer
 from isistan.smartweb.core.SearchEngine import SmartSearchEngine
-from isistan.smartweb.persistence.WordBag import WordBag
 from isistan.smartweb.preprocess.StringPreprocessorAdapter import StringPreprocessorAdapter
 from isistan.smartweb.preprocess.StringTransformer import StringTransformer
 
@@ -34,25 +31,10 @@ class BirchSearchEngine(SmartSearchEngine):
     def unpublish(self, service):
         pass
 
-    def publish_services(self, service_list):
-        transformer = self._create_document_transformer(service_list)
-        documents = []
-        current_document = 1
-        for document in service_list:
-            print 'Loading document ' + str(current_document) + ' of ' + str(len(service_list))         
-            if self._load_corpus_from_file:
-                bag_of_words = WordBag().load_from_file(join(self._corpus_path, self._get_document_filename(document)))
-            else:
-                if self._document_expansion:
-                    bag_of_words = self._semantic_transformer.transform(transformer.transform(document))
-                else:
-                    bag_of_words = transformer.transform(document)
-            if self._save_corpus:
-                bag_of_words.save_to_file(join(self._corpus_path, self._get_document_filename(document)))
-            words = bag_of_words.get_words_str()
-            documents.append(words)
-            self._service_array.append(document)
-            current_document += 1
+    def _get_words(self, bag_of_words):
+        return bag_of_words.get_words_str()
+
+    def _after_publish(self, documents):
         self._tfidf_matrix = self._vectorizer.fit_transform(documents)
         self._cluster_index = Birch(n_clusters=20)
         self._cluster_index.fit(self._tfidf_matrix.toarray())

@@ -68,6 +68,35 @@ class SmartSearchEngine(SearchEngine):
         print 'Invalid document dataset'
         return None
 
+    @abc.abstractmethod
+    def _after_publish(self, documents):
+        pass
+
+    @abc.abstractmethod
+    def _get_words(self, bag_of_words):
+        pass
+
+    def publish_services(self, service_list):
+        transformer = self._create_document_transformer(service_list)
+        documents = []
+        current_document = 1
+        for document in service_list:
+            print 'Loading document ' + str(current_document) + ' of ' + str(len(service_list))
+            if self._load_corpus_from_file:
+                bag_of_words = WordBag().load_from_file(join(self._corpus_path, self._get_document_filename(document)))
+            else:
+                if self._document_expansion:
+                    bag_of_words = self._semantic_transformer.transform(transformer.transform(document))
+                else:
+                    bag_of_words = transformer.transform(document)
+            if self._save_corpus:
+                bag_of_words.save_to_file(join(self._corpus_path, self._get_document_filename(document)))
+            words = self._get_words(bag_of_words)
+            documents.append(self._preprocessor(words))
+            self._service_array.append(document)
+            current_document += 1
+        self._after_publish(documents)
+
     def load_configuration(self, configuration_file):
         config = ConfigParser.ConfigParser()
         config.read(configuration_file)
