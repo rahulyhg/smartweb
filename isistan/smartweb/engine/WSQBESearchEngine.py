@@ -27,8 +27,9 @@ class WSQBESearchEngine(SmartSearchEngine):
     def unpublish(self, service):
         pass
 
-    def _get_words(self, bag_of_words):
-        return bag_of_words.get_words_list()
+    def _preprocess(self, bag_of_words):
+        words = bag_of_words.get_words_list()
+        return self._preprocessor(words)
 
     def _after_publish(self, documents):
         self._dictionary = corpora.Dictionary(documents)

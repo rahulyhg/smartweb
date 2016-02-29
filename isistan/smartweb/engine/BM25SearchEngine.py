@@ -82,7 +82,7 @@ class BM25SearchEngine(SearchEngine):
         searcher.setSimilarity(BM25Similarity())
         processed_query = ' '.join(self._preprocessor(transformer.transform(query)))
         query = QueryParser(Version.LUCENE_CURRENT, "content", analyzer).parse(processed_query)
-        hits = searcher.search(query, 10)
+        hits = searcher.get_description(query, 10)
         result_list = []
         for hit in hits.scoreDocs:
             doc = searcher.doc(hit.doc)

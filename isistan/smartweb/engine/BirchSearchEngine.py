@@ -31,7 +31,7 @@ class BirchSearchEngine(SmartSearchEngine):
     def unpublish(self, service):
         pass
 
-    def _get_words(self, bag_of_words):
+    def _preprocess(self, bag_of_words):
         return bag_of_words.get_words_str()
 
     def _after_publish(self, documents):

@@ -73,7 +73,7 @@ class SmartSearchEngine(SearchEngine):
         pass
 
     @abc.abstractmethod
-    def _get_words(self, bag_of_words):
+    def _preprocess(self, bag_of_words):
         pass
 
     def publish_services(self, service_list):
@@ -91,8 +91,7 @@ class SmartSearchEngine(SearchEngine):
                     bag_of_words = transformer.transform(document)
             if self._save_corpus:
                 bag_of_words.save_to_file(join(self._corpus_path, self._get_document_filename(document)))
-            words = self._get_words(bag_of_words)
-            documents.append(self._preprocessor(words))
+            documents.append(self._preprocess(bag_of_words))
             self._service_array.append(document)
             current_document += 1
         self._after_publish(documents)
