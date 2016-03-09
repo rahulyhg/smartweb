@@ -42,8 +42,8 @@ class WSQBESearchEngine(SmartSearchEngine):
         pass
 
     def find(self, query):
-        transformer = StringTransformer()
-        query_vector = self._dictionary.doc2bow(self._preprocessor(transformer.transform(query).get_words_list()))
+        query = StringTransformer().transform(query)
+        query_vector = self._dictionary.doc2bow(self._preprocessor(self._query_transformer.transform(query).get_words_list()))
         query_tfidf_vector = self._tfidf_model[query_vector]
         results = self._index[query_tfidf_vector]
         results = sorted(enumerate(results), key=lambda item: -item[1])

@@ -5,7 +5,7 @@ from isistan.smartweb.core.NamedEntityRecognizer import NamedEntityRecognizer
 __author__ = 'ignacio'
 
 
-class SemanticTransformer(Transformer):
+class NERTransformer(Transformer):
     #
     # Identifies entities in the words and add expands
     # the meaning by adding freebase information

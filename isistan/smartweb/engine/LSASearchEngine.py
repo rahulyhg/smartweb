@@ -49,8 +49,8 @@ class LSASearchEngine(SmartSearchEngine):
         pass
 
     def find(self, query):
-        transformer = StringTransformer()
-        query_array = self._vectorizer.transform([transformer.transform(query).get_words_str()])
+        query = StringTransformer().transform(query)
+        query_array = self._vectorizer.transform([self._query_transformer.transform(query).get_words_str()])
         query_array = self._svd.transform(query_array.toarray())
         result = self._lsi_index.kneighbors(query_array, return_distance=False)[0]
         result_list = []

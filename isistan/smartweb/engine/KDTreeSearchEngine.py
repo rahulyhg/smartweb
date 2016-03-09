@@ -40,8 +40,8 @@ class KDTreeSearchEngine(SmartSearchEngine):
         pass
 
     def find(self, query):
-        transformer = StringTransformer()
-        query_array = self._vectorizer.transform([transformer.transform(query).get_words_str()]).toarray()
+        query = StringTransformer().transform(query)
+        query_array = self._vectorizer.transform([self._query_transformer.transform(query).get_words_str()]).toarray()
         result = self._kdtree_index.query(query_array, k=10, return_distance=False)
         result_list = []
         for index in result[0]:

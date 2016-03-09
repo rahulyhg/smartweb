@@ -1,6 +1,7 @@
 from sklearn.cluster import Birch
 from sklearn.neighbors import NearestNeighbors
 
+from isistan.smartweb.persistence.WordBag import WordBag
 from isistan.smartweb.preprocess.text import TfidfVectorizer
 from isistan.smartweb.core.SearchEngine import SmartSearchEngine
 from isistan.smartweb.preprocess.StringPreprocessorAdapter import StringPreprocessorAdapter
@@ -60,8 +61,8 @@ class BirchSearchEngine(SmartSearchEngine):
         pass
 
     def find(self, query):
-        transformer = StringTransformer()
-        query_array = self._vectorizer.transform([transformer.transform(query).get_words_str()]).toarray()
+        query = StringTransformer().transform(query)
+        query_array = self._vectorizer.transform([self._query_transformer.transform(query).get_words_str()]).toarray()
         target_label = self._cluster_index.predict(query_array)[0]
         target_indexes = self._cluster[target_label].kneighbors(query_array, return_distance=False)[0]
         result = []

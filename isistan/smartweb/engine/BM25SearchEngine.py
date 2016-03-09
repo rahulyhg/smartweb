@@ -19,7 +19,7 @@ from isistan.smartweb.core.SearchEngine import SearchEngine
 from isistan.smartweb.preprocess.StringPreprocessor import StringPreprocessor
 from isistan.smartweb.preprocess.WSDLTransformer import WSDLTransformer
 from isistan.smartweb.preprocess.StringTransformer import StringTransformer
-from isistan.smartweb.preprocess.SemanticTransformer import SemanticTransformer
+from isistan.smartweb.preprocess.NERTransformer import NERTransformer
 from isistan.smartweb.core.StandfordNER import StandfordNER
 from isistan.smartweb.core.FreebaseInformationSource import FreebaseInformationSource
 
@@ -44,7 +44,7 @@ class BM25SearchEngine(SearchEngine):
             freebase_api_key = str(config.get('RegistryConfigurations', 'freebase_api_key'))
             standford_ner = StandfordNER()
             freebase_source = FreebaseInformationSource(freebase_api_key)
-            self._semantic_transformer = SemanticTransformer(freebase_source, standford_ner)
+            self._semantic_transformer = NERTransformer(freebase_source, standford_ner)
             self._document_expansion = True
 
     def unpublish(self, service):
