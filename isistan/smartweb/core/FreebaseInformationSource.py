@@ -60,21 +60,22 @@ class FreebaseInformationSource(InformationSource):
     def get_description(self, query):
         additional_words = []
         topic = self._query_freebase(query)
-        if '/common/topic/article' in topic['property']:
-            if '/common/document/text' in topic['property']['/common/topic/article']['values'][0]['property']:
-                sentences = topic['property']['/common/topic/article']['values'][0]['property']['/common/document/text']['values'][0]['value'].split('.')
-                if sentences is not None:
-                    print 'found information for query: ' + query
-                    for i in range(0, min(len(sentences), self._NUMBER_OF_SENTENCES)):
-                        transformer = StringTransformer()
-                        additional_sentence = transformer.transform(sentences[i]).get_words_list()
-                        additional_words.extend(additional_sentence)
+        if topic is not None:
+            if '/common/topic/article' in topic['property']:
+                if '/common/document/text' in topic['property']['/common/topic/article']['values'][0]['property']:
+                    sentences = topic['property']['/common/topic/article']['values'][0]['property']['/common/document/text']['values'][0]['value'].split('.')
+                    if sentences is not None:
+                        print 'found information for query: ' + query
+                        for i in range(0, min(len(sentences), self._NUMBER_OF_SENTENCES)):
+                            transformer = StringTransformer()
+                            additional_sentence = transformer.transform(sentences[i]).get_words_list()
+                            additional_words.extend(additional_sentence)
+                    else:
+                        print 'information not found for query: ' + query
                 else:
                     print 'information not found for query: ' + query
             else:
                 print 'information not found for query: ' + query
-        else:
-            print 'information not found for query: ' + query
         return additional_words
 
     def get_type(self, query):

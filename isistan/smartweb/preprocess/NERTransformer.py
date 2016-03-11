@@ -24,7 +24,7 @@ class NERTransformer(Transformer):
         entities = self._get_entities(string_data)
         if entities is not None:
             for entity in entities:
-                additional_information = self._information_source.search(entity)
+                additional_information = self._information_source.get_description(entity)
                 if additional_information is not None:
                     wordbag.get_words_list().extend(additional_information)
         return wordbag
