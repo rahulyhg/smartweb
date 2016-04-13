@@ -1,5 +1,6 @@
 from sklearn.cluster import KMeans
 from sklearn.neighbors import NearestNeighbors
+from sklearn.mixture import GMM
 
 from isistan.smartweb.persistence.WordBag import WordBag
 from isistan.smartweb.preprocess.text import TfidfVectorizer
@@ -10,12 +11,12 @@ from isistan.smartweb.preprocess.StringTransformer import StringTransformer
 __author__ = 'ignacio'
 
 
-class KMeansSearchEngine(SmartSearchEngine):
+class GaussianMixtureSearchEngine(SmartSearchEngine):
     #
     # Registry implementation using clusters
 
     def __init__(self):
-        super(KMeansSearchEngine, self).__init__()
+        super(GaussianMixtureSearchEngine, self).__init__()
         self._service_array = []
         self._cluster_index = None
         self._cluster = {}
@@ -23,7 +24,7 @@ class KMeansSearchEngine(SmartSearchEngine):
         self._tfidf_matrix = None
 
     def load_configuration(self, configuration_file):
-        super(KMeansSearchEngine, self).load_configuration(configuration_file)
+        super(GaussianMixtureSearchEngine, self).load_configuration(configuration_file)
         self._vectorizer = TfidfVectorizer(sublinear_tf=False,
                                            analyzer='word', lowercase=False, use_bm25idf=self._use_bm25idf,
                                            bm25_tf=self._use_bm25tf, k = self._bm25_k,
@@ -37,14 +38,14 @@ class KMeansSearchEngine(SmartSearchEngine):
 
     def _after_publish(self, documents):
         self._tfidf_matrix = self._vectorizer.fit_transform(documents)
-        self._cluster_index = KMeans()
-        self._cluster_index.fit(self._tfidf_matrix.toarray())
+        self._cluster_index = GMM(n_components=8)
+        labels_ = self._cluster_index.fit_predict(self._tfidf_matrix.toarray())
         i = 0
         self._document_cluster = {}
         for document in documents:
-            if not self._cluster_index.labels_[i] in self._document_cluster:
-                self._document_cluster[self._cluster_index.labels_[i]] = []
-            self._document_cluster[self._cluster_index.labels_[i]].append((document, i))
+            if not labels_[i] in self._document_cluster:
+                self._document_cluster[labels_[i]] = []
+            self._document_cluster[labels_[i]].append((document, i))
             i += 1
         print 'Number of clusters: ' + str(len(self._document_cluster))
         for label in self._document_cluster:

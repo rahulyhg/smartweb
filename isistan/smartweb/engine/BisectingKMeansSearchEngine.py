@@ -1,7 +1,7 @@
-from sklearn.cluster import KMeans
 from sklearn.neighbors import NearestNeighbors
 
 from isistan.smartweb.persistence.WordBag import WordBag
+from isistan.smartweb.algorithm.BisectingKMeans import BisectingKMeans
 from isistan.smartweb.preprocess.text import TfidfVectorizer
 from isistan.smartweb.core.SearchEngine import SmartSearchEngine
 from isistan.smartweb.preprocess.StringPreprocessorAdapter import StringPreprocessorAdapter
@@ -10,12 +10,12 @@ from isistan.smartweb.preprocess.StringTransformer import StringTransformer
 __author__ = 'ignacio'
 
 
-class KMeansSearchEngine(SmartSearchEngine):
+class BisectingKMeansSearchEngine(SmartSearchEngine):
     #
     # Registry implementation using clusters
 
     def __init__(self):
-        super(KMeansSearchEngine, self).__init__()
+        super(BisecticKMeansSearchEngine, self).__init__()
         self._service_array = []
         self._cluster_index = None
         self._cluster = {}
@@ -23,7 +23,7 @@ class KMeansSearchEngine(SmartSearchEngine):
         self._tfidf_matrix = None
 
     def load_configuration(self, configuration_file):
-        super(KMeansSearchEngine, self).load_configuration(configuration_file)
+        super(BisectingKMeansSearchEngine, self).load_configuration(configuration_file)
         self._vectorizer = TfidfVectorizer(sublinear_tf=False,
                                            analyzer='word', lowercase=False, use_bm25idf=self._use_bm25idf,
                                            bm25_tf=self._use_bm25tf, k = self._bm25_k,
@@ -37,7 +37,7 @@ class KMeansSearchEngine(SmartSearchEngine):
 
     def _after_publish(self, documents):
         self._tfidf_matrix = self._vectorizer.fit_transform(documents)
-        self._cluster_index = KMeans()
+        self._cluster_index = BisectingKMeans(n_clusters=8)
         self._cluster_index.fit(self._tfidf_matrix.toarray())
         i = 0
         self._document_cluster = {}

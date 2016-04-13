@@ -4,6 +4,7 @@ import ConfigParser
 from os.path import join
 
 from isistan.smartweb.persistence.WordBag import WordBag
+from isistan.smartweb.preprocess.DummyTransformer import DummyTransformer
 from isistan.smartweb.preprocess.StringTransformer import StringTransformer
 from isistan.smartweb.preprocess.WADLTransformer import WADLTransformer
 from isistan.smartweb.preprocess.WSDLTransformer import WSDLTransformer
@@ -42,6 +43,7 @@ class SearchEngine(object):
     def find(self, query):
         pass
 
+
 class SmartSearchEngine(SearchEngine):
     #
     # Smart Search engine base abstract class
@@ -51,6 +53,7 @@ class SmartSearchEngine(SearchEngine):
         self._load_corpus_from_file = False
         self._save_corpus = False
         self._document_transformer = None
+        self._query_transformer = None
         self._use_bm25tf = False
         self._use_bm25idf = False
         self._bm25_k = 1.2
@@ -118,11 +121,13 @@ class SmartSearchEngine(SearchEngine):
             self._document_expansion = True
 
         if config.get('RegistryConfigurations', 'wordnet_expansion').lower() == 'true':
-            #self._document_transformer = WordNetTransformer()
+            self._document_transformer = WordNetTransformer()
+            self._document_expansion = True
+
+        if config.get('RegistryConfigurations', 'wordnet_query_expansion').lower() == 'true':
             self._query_transformer = WordNetTransformer()
-            #self._document_expansion = True
         else:
-            self._query_transformer = StringTransformer()
+            self._query_transformer = DummyTransformer()
 
         if config.has_option('RegistryConfigurations', 'use_bm25idf'):
             if config.get('RegistryConfigurations', 'use_bm25idf').lower() == 'true':
