@@ -5,7 +5,7 @@ from isistan.smartweb.core.NamedEntityRecognizer import NamedEntityRecognizer
 __author__ = 'ignacio'
 
 
-class SemanticTransformer(Transformer):
+class NERTransformer(Transformer):
     #
     # Identifies entities in the words and add expands
     # the meaning by adding freebase information
@@ -24,7 +24,7 @@ class SemanticTransformer(Transformer):
         entities = self._get_entities(string_data)
         if entities is not None:
             for entity in entities:
-                additional_information = self._information_source.search(entity)
+                additional_information = self._information_source.get_description(entity)
                 if additional_information is not None:
                     wordbag.get_words_list().extend(additional_information)
         return wordbag

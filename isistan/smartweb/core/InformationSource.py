@@ -10,5 +10,13 @@ class InformationSource(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def search(self, query):
+    def get_description(self, query):
+        pass
+
+    @abc.abstractmethod
+    def get_type(self, query):
+        pass
+
+    @abc.abstractmethod
+    def get_aka(self, query):
         pass

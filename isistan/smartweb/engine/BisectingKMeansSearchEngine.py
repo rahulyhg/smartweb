@@ -1,9 +1,9 @@
 import ConfigParser
 
-from sklearn.cluster import Birch
 from sklearn.neighbors import NearestNeighbors
 
 from isistan.smartweb.persistence.WordBag import WordBag
+from isistan.smartweb.algorithm.BisectingKMeans import BisectingKMeans
 from isistan.smartweb.preprocess.text import TfidfVectorizer
 from isistan.smartweb.core.SearchEngine import SmartSearchEngine
 from isistan.smartweb.preprocess.StringPreprocessorAdapter import StringPreprocessorAdapter
@@ -12,12 +12,12 @@ from isistan.smartweb.preprocess.StringTransformer import StringTransformer
 __author__ = 'ignacio'
 
 
-class BirchSearchEngine(SmartSearchEngine):
+class BisectingKMeansSearchEngine(SmartSearchEngine):
     #
     # Registry implementation using clusters
 
     def __init__(self):
-        super(BirchSearchEngine, self).__init__()
+        super(BisectingKMeansSearchEngine, self).__init__()
         self._service_array = []
         self._cluster_index = None
         self._cluster = {}
@@ -25,7 +25,7 @@ class BirchSearchEngine(SmartSearchEngine):
         self._tfidf_matrix = None
 
     def load_configuration(self, configuration_file):
-        super(BirchSearchEngine, self).load_configuration(configuration_file)
+        super(BisectingKMeansSearchEngine, self).load_configuration(configuration_file)
 
         config = ConfigParser.ConfigParser()
         config.read(configuration_file)
@@ -45,7 +45,7 @@ class BirchSearchEngine(SmartSearchEngine):
 
     def _after_publish(self, documents):
         self._tfidf_matrix = self._vectorizer.fit_transform(documents)
-        self._cluster_index = Birch(n_clusters=self._n_clusters)
+        self._cluster_index = BisectingKMeans(n_clusters=self._n_clusters)
         self._cluster_index.fit(self._tfidf_matrix.toarray())
         i = 0
         self._document_cluster = {}
@@ -57,6 +57,7 @@ class BirchSearchEngine(SmartSearchEngine):
         print 'Number of clusters: ' + str(len(self._document_cluster))
         for label in self._document_cluster:
             print 'Label elements: ' + str(len(self._document_cluster[label]))
+        for label in self._document_cluster:
             self._cluster[label] = NearestNeighbors(len(self._document_cluster[label]), algorithm='brute', metric='euclidean')
             tfidf_matrix = self._vectorizer.transform(doc[0] for doc in self._document_cluster[label])
             self._cluster[label].fit(tfidf_matrix.toarray())

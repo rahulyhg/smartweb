@@ -1,6 +1,8 @@
 import urllib
 import urllib2
+
 from isistan.smartweb.core.SearchEngine import SearchEngine
+from isistan.smartweb.util.HttpUtils import HttpUtils
 
 __author__ = 'ignacio'
 
@@ -25,11 +27,11 @@ class SmartWebClient(SearchEngine):
 
         data = urllib.urlencode(values)
         req = urllib2.Request(self._server_url + self._services_path, data)
-        print urllib2.urlopen(req).read()
+        print HttpUtils.http_request(req)
 
     def find(self, query):
         url = self._server_url + self._services_path +'/' + urllib.quote(query)
-        return urllib2.urlopen(url).read().split(' ')
+        return HttpUtils.http_request(url).split(' ')
 
     def publish(self, service):
         pass
